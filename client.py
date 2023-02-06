@@ -20,6 +20,14 @@ class Client():
         return self.sock.recv(24)
 
     def ping(self):
-        ping_message = ping.message()
-        self.sock.send(ping_message.get())
-        return self.sock.recv(128)
+    def read(self):
+        header = self.sock.recv(24)
+        payload_length = int.from_bytes(header[16:20], 'little')
+        payload = self.sock.recv(payload_length)
+        checksum = header[20:24]
+        payload_checksum = utils.checksum(payload)
+        
+        if payload_checksum == checksum:
+            return (payload, header)
+        else:
+            return None, header
