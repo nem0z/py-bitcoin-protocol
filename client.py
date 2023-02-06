@@ -14,7 +14,19 @@ class Client():
         self.sock = socket.socket()
 
     def connect(self):
+        self.sock.settimeout(5.0)
         self.sock.connect((self.peer_ip, self.peer_port))
+        
+        self.version()
+        payload, header = self.read()
+        print("Version :\nHeader :", header,"\nPayload :", payload, end="\n\n")
+        
+        self.verack()
+        payload, header = self.read()
+        print("Verack :\nHeader :", header,"\nPayload :", payload, end="\n\n")
+       
+        self.clear()
+
     def version(self):
         version_message = version.message(self.peer_ip)
         self.sock.send(version_message.get())
