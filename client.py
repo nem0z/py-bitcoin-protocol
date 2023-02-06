@@ -17,7 +17,10 @@ class Client():
         self.sock.connect((self.peer_ip, self.peer_port))
         version_message = version.message(self.peer_ip)
         self.sock.send(version_message.get())
-        return self.sock.recv(24)
+    
+    def verack(self):
+        verack_message = verack.message()
+        self.sock.send(verack_message.get())
 
     def ping(self):
     def clear(self):
