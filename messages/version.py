@@ -1,5 +1,4 @@
 import socket
-import urllib.request
 import time
 
 import utils
@@ -14,7 +13,7 @@ def message(peer_ip_str, peer_port=8333):
     services = int(1).to_bytes(8, 'little')
 
     timestamp = int(time.time()).to_bytes(8, 'little')
-    client_ip_str = urllib.request.urlopen('https://api.ipify.org').read().decode()
+    client_ip_str = "127.0.0.1"
     client_ip = socket.inet_aton(client_ip_str)
     peer_ip = socket.inet_aton(peer_ip_str)
 
