@@ -8,7 +8,7 @@ class Message:
         self.command_name = utils.to_bytes_fixed_size(command_name.encode("ascii"), 12)
         self.payload = payload
         self.length = (int(len(payload))).to_bytes(4, byteorder="little", signed=False)
-        self.checksum = hashlib.sha256(hashlib.sha256(payload).digest()).digest()[:4]
+        self.checksum = utils.checksum(payload)
 
     def get(self):
         return (
