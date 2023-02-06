@@ -15,6 +15,7 @@ class Client():
 
     def connect(self):
         self.sock.connect((self.peer_ip, self.peer_port))
+    def version(self):
         version_message = version.message(self.peer_ip)
         self.sock.send(version_message.get())
     
