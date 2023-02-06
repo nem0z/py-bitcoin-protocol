@@ -1,7 +1,11 @@
 import socket
+import time
+
+import utils
 
 from messages import ping
 from messages import version
+from messages import verack
 
 class Client():
     def __init__(self, peer_ip, peer_port):
