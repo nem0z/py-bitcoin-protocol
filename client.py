@@ -20,6 +20,15 @@ class Client():
         return self.sock.recv(24)
 
     def ping(self):
+    def clear(self):
+        try:
+            while True:
+                data = self.sock.recv(1024)
+                print("Clear", len(data), "bytes")
+                if not data:
+                    break
+        except socket.timeout:
+            return
     def read(self):
         header = self.sock.recv(24)
         payload_length = int.from_bytes(header[16:20], 'little')
