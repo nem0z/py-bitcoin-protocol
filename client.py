@@ -36,6 +36,11 @@ class Client():
         self.sock.send(verack_message.get())
 
     def ping(self):
+        msg = ping.message()
+        self.sock.send(msg.get())
+        payload, _ = self.read()
+        return payload == msg.payload
+    
     def clear(self):
         try:
             while True:
@@ -45,6 +50,7 @@ class Client():
                     break
         except socket.timeout:
             return
+    
     def read(self):
         header = self.sock.recv(24)
         payload_length = int.from_bytes(header[16:20], 'little')
