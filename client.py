@@ -56,7 +56,16 @@ class Client():
         
         list_addr = utils.chunk_to_list(payload[size:], 30)
         return [utils.parse_addr(addr) for addr in list_addr]
-    
+
+    def mempool(self):
+        msg = Message("mempool", bytes())
+        self.sock.send(msg.get())
+        # payload, header = self.read()
+        # print(payload, header)
+        resp = self.sock.recv(1024)
+        print(resp)
+        print(msg.get())
+            
     def clear(self):
         try:
             while True:
