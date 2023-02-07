@@ -1,4 +1,5 @@
 import socket
+import urllib.request
 import time
 
 import utils
@@ -7,7 +8,7 @@ from message import Message
 
 def message(peer_ip_str, ipv4, peer_port=8333):
     # Version number (PROTOCOL_VERSION in core)
-    version = int(70015).to_bytes(4, 'little')
+    version = int(70016).to_bytes(4, 'little')
 
     # Random services, we don't care
     services = int(1).to_bytes(8, 'little')
