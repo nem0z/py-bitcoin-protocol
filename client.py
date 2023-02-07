@@ -54,7 +54,11 @@ class Client():
     def read(self):
         header = self.sock.recv(24)
         payload_length = int.from_bytes(header[16:20], 'little')
-        payload = self.sock.recv(payload_length)
+        payload = self.sock.recv(1024)
+        
+        while(len(payload) < payload_length):
+            payload += self.sock.recv(1024)
+        
         checksum = header[20:24]
         payload_checksum = utils.checksum(payload)
         
