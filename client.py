@@ -3,6 +3,8 @@ import time
 
 import utils
 
+from message import Message
+
 from messages import ping
 from messages import version
 from messages import verack
@@ -40,6 +42,15 @@ class Client():
         self.sock.send(msg.get())
         payload, _ = self.read()
         return payload == msg.payload
+    
+    def getaddr(self):
+        msg = Message("getaddr", bytes())
+        self.sock.send(msg.get())
+        payload, _ = self.read()
+        size, _ = utils.parse_var_int(payload[:9])
+        
+        list_addr = utils.chunk_to_list(payload[size:], 30)
+        return [utils.parse_addr(addr) for addr in list_addr]
     
     def clear(self):
         try:
