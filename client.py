@@ -53,11 +53,12 @@ class Client():
         return [utils.parse_addr(addr) for addr in list_addr]
     
     def clear(self):
+        time.sleep(.5)
         try:
             while True:
                 data = self.sock.recv(1024)
                 print("Clear", len(data), "bytes")
-                if not data:
+                if len(data) < 1024:
                     break
         except socket.timeout:
             return
