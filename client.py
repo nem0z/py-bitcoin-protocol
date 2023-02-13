@@ -47,6 +47,8 @@ class Client():
         msg = Message("getaddr", bytes())
         self.sock.send(msg.get())
         payload, _ = self.read()
+        if payload == None:
+            return []
         size, _ = utils.parse_var_int(payload[:9])
         
         list_addr = utils.chunk_to_list(payload[size:], 30)
