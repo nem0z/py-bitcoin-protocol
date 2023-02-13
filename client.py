@@ -1,7 +1,8 @@
 import socket
-import time
 
 import utils
+
+from message import Message
 
 from messages import ping
 from messages import version
@@ -25,8 +26,6 @@ class Client():
         payload, header = self.read()
         print("Verack :\nHeader :", header,"\nPayload :", payload, end="\n\n")
        
-        self.clear()
-
     def version(self):
         version_message = version.message(self.peer_ip)
         self.sock.send(version_message.get())
@@ -38,15 +37,31 @@ class Client():
     def ping(self):
         msg = ping.message()
         self.sock.send(msg.get())
-        payload, _ = self.read()
+        resp_message = utils.to_bytes_fixed_size(bytes("pong", "ascii"), 12)
+        
+        payload, header = self.read()
+        while header[4:16] != resp_message and len(header) > 0:
+            payload, header = self.read()
+        
         return payload == msg.payload
+    
+    def getaddr(self):
+        msg = Message("getaddr", bytes())
+        self.sock.send(msg.get())
+        payload, _ = self.read()
+        if payload == None:
+            return []
+        size, _ = utils.parse_var_int(payload[:9])
+        
+        list_addr = utils.chunk_to_list(payload[size:], 30)
+        return [utils.parse_addr(addr) for addr in list_addr]
     
     def clear(self):
         try:
             while True:
                 data = self.sock.recv(1024)
                 print("Clear", len(data), "bytes")
-                if not data:
+                if len(data) < 1024:
                     break
         except socket.timeout:
             return
@@ -54,7 +69,12 @@ class Client():
     def read(self):
         header = self.sock.recv(24)
         payload_length = int.from_bytes(header[16:20], 'little')
-        payload = self.sock.recv(payload_length)
+        payload = self.sock.recv(payload_length if payload_length < 1024 else 1024)
+        
+        while(len(payload) < payload_length):
+            remaining = payload_length - len(payload)
+            payload += self.sock.recv(1024 if remaining > 1024 else remaining)
+
         checksum = header[20:24]
         payload_checksum = utils.checksum(payload)
         
