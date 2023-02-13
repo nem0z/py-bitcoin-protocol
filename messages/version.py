@@ -5,7 +5,7 @@ import utils
 from message import Message
 
 
-def message(peer_ip_str, peer_port=8333):
+def message(peer_ip_str, ipv4, peer_port=8333):
     # Version number (PROTOCOL_VERSION in core)
     version = int(70015).to_bytes(4, 'little')
 
@@ -13,9 +13,14 @@ def message(peer_ip_str, peer_port=8333):
     services = int(1).to_bytes(8, 'little')
 
     timestamp = int(time.time()).to_bytes(8, 'little')
-    client_ip_str = "127.0.0.1"
-    client_ip = socket.inet_aton(client_ip_str)
-    peer_ip = socket.inet_aton(peer_ip_str)
+    if ipv4:
+        client_ip_str = "127.0.0.1"
+        client_ip = socket.inet_aton(client_ip_str)
+        peer_ip = socket.inet_aton(peer_ip_str)
+    else:
+        client_ip_str = "0000:0000:0000:0000:0000:0000:0000:0001"
+        client_ip = socket.inet_pton(socket.AF_INET6, client_ip_str)
+        peer_ip = socket.inet_pton(socket.AF_INET6, peer_ip_str)
 
     addr_recv = utils.to_bytes_fixed_size(services, 19) + b'\xff\xff'
     addr_recv += peer_ip + int(peer_port).to_bytes(2, 'big')
