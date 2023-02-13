@@ -27,8 +27,6 @@ class Client():
         payload, header = self.read()
         print("Verack :\nHeader :", header,"\nPayload :", payload, end="\n\n")
        
-        self.clear()
-
     def version(self):
         version_message = version.message(self.peer_ip)
         self.sock.send(version_message.get())
@@ -60,7 +58,6 @@ class Client():
         return [utils.parse_addr(addr) for addr in list_addr]
     
     def clear(self):
-        time.sleep(.5)
         try:
             while True:
                 data = self.sock.recv(1024)
@@ -78,7 +75,7 @@ class Client():
         while(len(payload) < payload_length):
             remaining = payload_length - len(payload)
             payload += self.sock.recv(1024 if remaining > 1024 else remaining)
-        
+
         checksum = header[20:24]
         payload_checksum = utils.checksum(payload)
         
