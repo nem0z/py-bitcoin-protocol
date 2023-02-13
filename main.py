@@ -8,3 +8,6 @@ if __name__ == "__main__":
 
     pong = client.ping()
     print("Pong :", pong)
+    
+    list_addr = client.getaddr()
+    print(list_addr[0] if len(list_addr) > 0 else None)
