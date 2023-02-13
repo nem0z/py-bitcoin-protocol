@@ -1,4 +1,5 @@
 import hashlib
+import socket
 
 def checksum(data):
     return hashlib.sha256(hashlib.sha256(data).digest()).digest()[:4]
@@ -22,13 +23,10 @@ def parse_var_int(first_9_bytes):
 def chunk_to_list(data, chunk_size=30):
     return [data[i:i+chunk_size] for i in range(0, len(data), chunk_size)]
 
-def ip_to_string(bytes_ip):
-    return '.'.join(str(b) for b in bytes_ip)
-
 def parse_ip(data):
-    ipv4 = data[-4:]
-    ipv6 = data[:12] + bytes(16) + bytes(16) + data[-4:]
-    return ip_to_string(ipv4), ip_to_string(ipv6)
+    ipv4 = socket.inet_ntop(socket.AF_INET, data[-4:])
+    ipv6 = socket.inet_ntop(socket.AF_INET6, data)
+    return ipv4, ipv6
 
 def parse_addr(addr):
     return (
