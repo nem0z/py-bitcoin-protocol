@@ -9,10 +9,11 @@ from messages import version
 from messages import verack
 
 class Client():
-    def __init__(self, peer_ip, peer_port):
+    def __init__(self, peer_ip, peer_port, ipv4=False):
+        self.ipv4 = ipv4
         self.peer_ip = peer_ip
         self.peer_port = peer_port
-        self.sock = socket.socket()
+        self.sock = socket.socket() if ipv4 else socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
 
     def connect(self):
         self.sock.settimeout(5.0)
