@@ -28,7 +28,7 @@ class Client():
         print("Verack :\nHeader :", header,"\nPayload :", payload, end="\n\n")
        
     def version(self):
-        version_message = version.message(self.peer_ip)
+        version_message = version.message(self.peer_ip, self.ipv4)
         self.sock.send(version_message.get())
     
     def verack(self):
