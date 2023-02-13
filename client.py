@@ -40,7 +40,12 @@ class Client():
     def ping(self):
         msg = ping.message()
         self.sock.send(msg.get())
-        payload, _ = self.read()
+        resp_message = utils.to_bytes_fixed_size(bytes("pong", "ascii"), 12)
+        
+        payload, header = self.read()
+        while header[4:16] != resp_message and len(header) > 0:
+            payload, header = self.read()
+        
         return payload == msg.payload
     
     def getaddr(self):
