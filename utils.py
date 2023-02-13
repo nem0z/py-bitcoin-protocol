@@ -1,4 +1,5 @@
 import hashlib
+import socket
 
 def checksum(data):
     return hashlib.sha256(hashlib.sha256(data).digest()).digest()[:4]
